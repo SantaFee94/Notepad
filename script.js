@@ -7,14 +7,14 @@ let allNotes = {
     trashNotesTitles: [],
 };
 
-//notizen hinzufügen
-
 function renderAllNotes() {
     getFromLocalStorage();
     renderNotes();
     renderArchiveNotes();
     renderTrashNotes();
 }
+
+//Add note
 
 function addNote() {
     let noteInputRef = document.getElementById("user_input");
@@ -32,10 +32,10 @@ function addNote() {
     noteInputRef.value = "";
     noteInputTitleRef.value = "";
 
-    renderAllNotes()
+    renderAllNotes();
 }
 
-//notizen anzeigen lassen
+//Display notes
 
 function renderNotes() {
     let contentRef = document.getElementById("content");
@@ -46,7 +46,7 @@ function renderNotes() {
     }
 }
 
-//notizen Archivieren
+//Archive notes
 
 function archiveNote(indexNote) {
     let archiveNote = allNotes.notes.splice(indexNote, 1);
@@ -62,7 +62,7 @@ function archiveNote(indexNote) {
     renderTrashNotes();
 }
 
-//notizen verschieben in das Archive
+//Display note in archive
 
 function renderArchiveNotes() {
     let archiveContentRef = document.getElementById("archive_content");
@@ -73,7 +73,7 @@ function renderArchiveNotes() {
     }
 }
 
-// notiz löschen aus dem Archive
+//Delete note from archive
 
 function trashNote(indexTrashNote) {
     let trashNote = allNotes.archiveNotes.splice(indexTrashNote, 1);
@@ -100,16 +100,16 @@ function renderTrashNotes() {
     }
 }
 
-//notiz entgültig löschen
+//Permanently delete note
 
 function deleteNote(indexTrashNote) {
     allNotes.trashNotes.splice(indexTrashNote, 1);
     allNotes.trashNotesTitles.splice(indexTrashNote, 1);
 
-    renderAllNotes()
+    renderAllNotes();
 }
 
-//Notize switches
+//Move note
 
 function moveNote(indexNote, startKey, destinationKey) {
     let moveToNote = allNotes[startKey].splice(indexNote, 1);

@@ -1,3 +1,5 @@
+//Save data to LocalStorage
+
 function saveToLocalStorage() {
     localStorage.setItem("notes", JSON.stringify(notes));
     localStorage.setItem("notesTitles", JSON.stringify(notesTitles));
@@ -7,7 +9,7 @@ function saveToLocalStorage() {
     localStorage.setItem("trashNotesTitles", JSON.stringify(trashNotesTitles));
 }
 
-//Daten aus dem LocalStorage abrufen
+//Retrieve data from LocalStorage
 
 function getFromLocalStorage() {
     notes = JSON.parse(localStorage.getItem("notes")) || [];
