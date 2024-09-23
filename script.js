@@ -5,9 +5,37 @@ let archiveNotesTitles = [];
 let trashNotes = [];
 let trashNotesTitles = [];
 
+let allNotes = {
+    'notesTitles': [],
+    'notes': [],
+    'archiveNotes': [],
+    'archiveNotesTitles': [],
+    'trashNotes': [],
+    'trashNotesTitles': [],
+
+};
+
 //notizen hinzufügen
 
 function init() {
+    getFromLocalStorage();
+    renderNotes();
+    renderArchiveNotes();
+    renderTrashNotes();
+}
+
+
+
+function moveNote(indexNote, startKey, destinationKey) {
+    let moveToNote = allNotes[startKey].splice(indexNote, 1);
+    allNotes[destinationKey].push(moveToNote);
+
+    
+
+    let titleMoveToNotes = allNotes[startKey + 'Titles'].splice(indexNote, 1);
+    allNotes[destinationKey + 'Titles'].push(titleMoveToNotes);
+
+    saveToLocalStorage();
     getFromLocalStorage();
     renderNotes();
     renderArchiveNotes();
@@ -24,8 +52,8 @@ function addNote() {
         return;
     }
 
-    notesTitles.push(noteTitle);
-    notes.push(noteInput);
+    allNotes.notesTitles.push(noteTitle);
+    allNotes.notes.push(noteInput);
 
     noteInputRef.value = "";
     noteInputTitleRef.value = "";
@@ -41,7 +69,7 @@ function renderNotes() {
     let contentRef = document.getElementById("content");
     contentRef.innerHTML = "";
 
-    for (let indexNote = 0; indexNote < notes.length; indexNote++) {
+    for (let indexNote = 0; indexNote < allNotes.notes.length; indexNote++) {
         contentRef.innerHTML += getNoteTemplate(indexNote);
     }
 }
@@ -49,19 +77,17 @@ function renderNotes() {
 //notizen Archivieren
 
 function archiveNote(indexNote) {
-    let archiveNote = notes.splice(indexNote, 1);
-    archiveNotes.push(archiveNote);
+    let archiveNote = allNotes.notes.splice(indexNote, 1);
+    allNotes.archiveNotes.push(archiveNote);
 
-    let archiveNoteTitle = notesTitles.splice(indexNote, 1);
-    archiveNotesTitles.push(archiveNoteTitle);
+    let archiveNoteTitle = allNotes.notesTitles.splice(indexNote, 1);
+    allNotes.archiveNotesTitles.push(archiveNoteTitle);
 
     saveToLocalStorage();
     getFromLocalStorage();
     renderNotes();
     renderArchiveNotes();
     renderTrashNotes();
-    deleteNote(indexTrashNote);
-    
 }
 
 //notizen verschieben in das Archive
@@ -70,7 +96,7 @@ function renderArchiveNotes() {
     let archiveContentRef = document.getElementById("archive_content");
     archiveContentRef.innerHTML = "";
 
-    for (let indexArchiveNote = 0; indexArchiveNote < archiveNotes.length; indexArchiveNote++) {
+    for (let indexArchiveNote = 0; indexArchiveNote < allNotes.archiveNotes.length; indexArchiveNote++) {
         archiveContentRef.innerHTML += getArchiveNoteTemplate(indexArchiveNote);
     }
 }
@@ -78,11 +104,11 @@ function renderArchiveNotes() {
 // notiz löschen aus dem Archive
 
 function trashNote(indexTrashNote) {
-    let trashNote = archiveNotes.splice(indexTrashNote, 1);
-    trashNotes.push(trashNote);
+    let trashNote = allNotes.archiveNotes.splice(indexTrashNote, 1);
+    allNotes.trashNotes.push(trashNote);
 
-    let trashNoteTitle = archiveNotesTitles.splice(indexTrashNote, 1);
-    trashNotesTitles.push(trashNoteTitle);
+    let trashNoteTitle = allNotes.archiveNotesTitles.splice(indexTrashNote, 1);
+    allNotes.trashNotesTitles.push(trashNoteTitle);
 
     saveToLocalStorage();
     getFromLocalStorage();
@@ -97,7 +123,7 @@ function renderTrashNotes() {
     let trashContentRef = document.getElementById("trash_content");
     trashContentRef.innerHTML = "";
 
-    for (let indexTrashNote = 0; indexTrashNote < trashNotes.length; indexTrashNote++) {
+    for (let indexTrashNote = 0; indexTrashNote < allNotes.trashNotes.length; indexTrashNote++) {
         trashContentRef.innerHTML += getTrashNoteTemplate(indexTrashNote);
     }
 }
@@ -105,8 +131,8 @@ function renderTrashNotes() {
 //notiz entgültig löschen
 
 function deleteNote(indexTrashNote) {
-    trashNotes.splice(indexTrashNote, 1);
-    trashNotesTitles.splice(indexTrashNote, 1);
+    allNotes.trashNotes.splice(indexTrashNote, 1);
+    allNotes.trashNotesTitles.splice(indexTrashNote, 1);
 
     saveToLocalStorage();
     renderNotes();
@@ -116,50 +142,43 @@ function deleteNote(indexTrashNote) {
 //Notize switches
 
 function noteToTrasch(indexNote) {
-    let moveToTrash = notes.splice(indexNote, 1);
-    trashNotes.push(moveToTrash);
+    let moveToTrash = allNotes.notes.splice(indexNote, 1);
+    allNotes.trashNotes.push(moveToTrash);
 
-    let titleMoveToTrash = notesTitles.splice(indexNote, 1);
-    trashNotesTitles.push(titleMoveToTrash);
+    let titleMoveToTrash = allNotes.notesTitles.splice(indexNote, 1);
+    allNotes.trashNotesTitles.push(titleMoveToTrash);
 
     saveToLocalStorage();
     getFromLocalStorage();
     renderNotes();
     renderArchiveNotes();
     renderTrashNotes();
-    deleteNote(indexTrashNote);
-    
 }
 
 function archiveToNote(indexNote) {
-    let moveToNote = archiveNotes.splice(indexNote, 1);
-    notes.push(moveToNote);
+    let moveToNote = allNotes.archiveNotes.splice(indexNote, 1);
+    allNotes.notes.push(moveToNote);
 
-    let titleMoveToNotes = archiveNotesTitles.splice(indexNote, 1);
-    notesTitles.push(titleMoveToNotes);
+    let titleMoveToNotes = allNotes.archiveNotesTitles.splice(indexNote, 1);
+    allNotes.notesTitles.push(titleMoveToNotes);
 
     saveToLocalStorage();
     getFromLocalStorage();
     renderNotes();
     renderArchiveNotes();
     renderTrashNotes();
-    deleteNote(indexTrashNote);
-    
 }
 
 function trashToNote(indexNote) {
-    let moveToNote = trashNotes.splice(indexNote, 1);
-    notes.push(moveToNote);
+    let moveToNote = allNotes.trashNotes.splice(indexNote, 1);
+    allNotes.notes.push(moveToNote);
 
-    let titleMoveToNotes = trashNotesTitles.splice(indexNote, 1);
-    notesTitles.push(titleMoveToNotes);
+    let titleMoveToNotes = allNotes.trashNotesTitles.splice(indexNote, 1);
+    allNotes.notesTitles.push(titleMoveToNotes);
 
     saveToLocalStorage();
     getFromLocalStorage();
     renderNotes();
     renderArchiveNotes();
     renderTrashNotes();
-    deleteNote(indexTrashNote);
-    
 }
-
