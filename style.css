@@ -1,0 +1,34 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    scroll-behavior: smooth;
+    text-align: center;
+    
+}
+
+.bgr_div {
+    width: 1440px;
+    height: 100vh;
+    background-image: url(./assets/bgr/clipboard.png);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.main_container{
+    padding-top: 128px;
+}
+
+#trash_content,
+#archive_content,
+#content{
+    text-align: center;
+}
+
+p{
+    margin-bottom: 6px;
+}
+
+h2{
+    text-align: center;
+}
